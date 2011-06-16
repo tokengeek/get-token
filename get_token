@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "yaml"
+require "httparty"
+
+class GetToken
+  include HTTParty
+  format :json
+
+  def self.get_token(setting)
+    api_endpoint, client_id, client_secret = get_workable_config(setting)
+    token_endpoint = [api_endpoint, "token"].join("/")
+    content = %Q{\{"client_id":"#{client_id}", "grant_type":"none"\}}
+    options = {
+      :body => content,
+      :headers => {"Content-Type" => "application/json"},
+      :basic_auth=>{:username => client_id, :password => client_secret}
+    }
+    response = post(token_endpoint, options)
+    if response["access_token"]
+      return response["access_token"]
+    else
+      puts "#{token_endpoint}, #{client_id}, #{client_secret}"
+      raise response.inspect
+    end
+  end
+
+  def self.get_workable_config(setting)
+    fog_config_file = File.open(File.expand_path("~/.fog"))
+    fog_config = YAML.load(fog_config_file)
+
+    if fog_config.keys.include?(setting)
+      api_endpoint = fog_config[setting][:brightbox_api_url] || "https://api.gb1.brightbox.com"
+      client_id = fog_config[setting][:brightbox_client_id]
+      client_secret = fog_config[setting][:brightbox_secret]
+      return api_endpoint, client_id, client_secret
+    else
+      raise "#{setting} is not a configured environment in the .fog file"
+    end
+  end
+end
+
+if ARGV[0]
+  setting = ARGV[0].to_sym
+else
+  setting = :default
+end
+
+puts GetToken.get_token(setting)
