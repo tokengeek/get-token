@@ -2,11 +2,11 @@
 
 This is a simple Ruby script to generate API tokens from the Brightbox Cloud API using your credentials.
 
-Details about the Brightbox Cloud (currently in Beta) are available here: http://beta.brightbox.com/
+Details about the Brightbox Cloud are available here: http://brightbox.com/
 
 The Brightbox API uses OAuth2 (Draft 10) token based authentication for all of it's requests. So if you find yourself making requests from curl getting valid tokens becomes a pain.
 
-Whilst useful at a low level, you might find using the Brightbox CLI tools (https://github.com/brightbox/brightbox-cli) or the Fog library (https://github.com/geemus/fog) more use.
+Whilst useful at a low level, you might find using the Brightbox CLI tools (https://github.com/brightbox/brightbox-cli) or the Fog library (https://github.com/fog/fog) more use.
 
 ## Setup
 
